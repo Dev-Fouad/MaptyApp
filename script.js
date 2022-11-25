@@ -28,24 +28,29 @@ if (navigator.geolocation)
 
 
             map.on('click' , function(mapEvent){
-                let {lat , lng} = mapEvent.latlng
-
-                L.marker([lat , lng])
-                  .addTo(map)
-                  .bindPopup(
-                    L.popup({
-                        maxWidth: 250,
-                        minWidth: 100,
-                        autoClose: false,
-                        closeOnClick: false,
-                        className: 'running-popup'
-                    })
-                  )
-                  .setPopupContent('Workout')
-                  .openPopup();
+                form.classList.remove('hidden')
+                inputDistance.focus()
             })
         },
         function() {
             alert('Could not get your Position')
         }
     );
+
+
+form.addEventListener('submit' , function(e){
+    e.preventDefault()
+    let {lat , lng} = mapEvent.latlng
+        L.marker([lat , lng])
+        .addTo(map)
+        .bindPopup(
+        L.popup({
+            maxWidth: 250,
+            minWidth: 100,
+            autoClose: false,
+            closeOnClick: false,
+            className: 'running-popup'
+        }))
+        .setPopupContent('Workout')
+        .openPopup();
+})
