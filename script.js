@@ -13,7 +13,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 
 class Workout {
     date = new Date()
-    id = (new Date() + '').slice(-10)
+    id = (date.now() + '').slice(-10)
 
     constructor (coords, distance, duration) {
         this.coords = coords
@@ -47,6 +47,9 @@ class Cycling extends Workout {
     }
 }
 
+///////////////////////////////////////////
+/////////APPLICATION ARCHITECTURE /////////
+///////////////////////////////////////////
 class App {
     #map;
     #mapEvent;
@@ -96,25 +99,51 @@ class App {
 
     _newWorkout() {
         e.preventDefault()
+        let validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp))
 
-        // Clear input fields
+        // Get data from form
+        let type = inputType.type
+        let distance = +inputDistance.value
+        let duration = +inputDuration.value
+        
+
+        // if workout running, create running object
+        if (type === 'running') {
+            // Check if data is valid
+            let cadence = +inputCadence.value
+            if (!validInputs(distance, duration, cadence))
+            return alert('Inputs have to be a Positive numbers ')
+        }
+        
+        // if workout cycling, create cycling object
+        if (type === 'cycling') {
+            let elevation = +inputElevation.value
+            if (!validInputs(distance, duration, elevation))
+            return alert('Inputs have to be a Positive numbers ')
+        }
+
+        // Add new object to workout array
+
+        // Render workout on map as marker
+        let {lat , lng} = this.#mapEvent.latlng
+        L.marker([lat , lng])
+        .addTo(this.#map)
+        .bindPopup(
+            L.popup({
+              maxWidth: 250,
+              minWidth: 100,
+              autoClose: false,
+              closeOnClick: false,
+              className: 'running-popup'
+            })
+        )
+        .setPopupContent('Workout')
+        .openPopup();
+        // Render workout on list 
+
+        // Hide form + clear input fields
         inputCadence.value = inputDistance.value = inputDuration.value = inputElevation.value
 
-        // Display Marker
-        let {lat , lng} = this.#mapEvent.latlng
-            L.marker([lat , lng])
-            .addTo(this.#map)
-            .bindPopup(
-                L.popup({
-                  maxWidth: 250,
-                  minWidth: 100,
-                  autoClose: false,
-                  closeOnClick: false,
-                  className: 'running-popup'
-                })
-            )
-            .setPopupContent('Workout')
-            .openPopup();
     }
 }
 
