@@ -53,6 +53,7 @@ class Cycling extends Workout {
 class App {
     #map;
     #mapEvent;
+    #workouts = []
 
     constructor() {
       this._getPosition();
@@ -106,7 +107,8 @@ class App {
         let type = inputType.type
         let distance = +inputDistance.value
         let duration = +inputDuration.value
-        
+        let {lat , lng} = this.#mapEvent.latlng
+        let workout;
 
         // if workout running, create running object
         if (type === 'running') { 
@@ -117,6 +119,8 @@ class App {
                 !Allpositive(distance, duration, cadence)
             ) 
             return alert('Inputs have to be a Positive numbers ')
+
+            workout = new Running ([lat, lng] , distance, duration, cadence)
         }
         
         // if workout cycling, create cycling object
@@ -127,12 +131,15 @@ class App {
                 !Allpositive(distance, duration)
             )
             return alert('Inputs have to be a Positive numbers ')
+
+            workout = new Cycling ([lat, lng] , distance, duration, cadence)
+
         }
 
         // Add new object to workout array
+        this.#workouts.push(workout)
 
         // Render workout on map as marker
-        let {lat , lng} = this.#mapEvent.latlng
         L.marker([lat , lng])
         .addTo(this.#map)
         .bindPopup(
