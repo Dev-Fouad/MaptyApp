@@ -100,6 +100,7 @@ class App {
     _newWorkout() {
         e.preventDefault()
         let validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp))
+        let Allpositive = (...inputs) => inputs.every(inp => inp > 0);
 
         // Get data from form
         let type = inputType.type
@@ -108,17 +109,23 @@ class App {
         
 
         // if workout running, create running object
-        if (type === 'running') {
+        if (type === 'running') { 
             // Check if data is valid
             let cadence = +inputCadence.value
-            if (!validInputs(distance, duration, cadence))
+            if (
+                !validInputs(distance, duration, cadence) ||
+                !Allpositive(distance, duration, cadence)
+            ) 
             return alert('Inputs have to be a Positive numbers ')
         }
         
         // if workout cycling, create cycling object
         if (type === 'cycling') {
             let elevation = +inputElevation.value
-            if (!validInputs(distance, duration, elevation))
+            if (
+                !validInputs(distance, duration, elevation) ||
+                !Allpositive(distance, duration)
+            )
             return alert('Inputs have to be a Positive numbers ')
         }
 
