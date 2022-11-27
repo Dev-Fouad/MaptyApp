@@ -9,7 +9,7 @@ const inputType = document.querySelector('.form__input--type');
 const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
-const inputElevation = document.querySelector('.form__input--elevation');
+const inputElevation = document.querySelector('.form__input--elevation');  
 
 class Workout {
     date = new Date()
@@ -70,6 +70,7 @@ class App {
       this._getPosition();
       form.addEventListener('submit' , this._newWorkout.bind(this))
       inputType.addEventListener('change' , this._toggleElevationField)
+      containerWorkouts.addEventListener('click' , this._moveToPopup.bind(this))
     }
 
     _getPosition() {
@@ -231,6 +232,14 @@ class App {
         `;
 
         form.insertAdjacentHTML('afterend' , html)
+    }
+
+    _moveToPopup(e) {
+        let workoutEl = e.target.closest('.workout')
+
+        if (!workoutEl) return;
+
+        let workout = this.#workouts.find(work => work.id === workoutEl.dataset.id)
     }
 }
 let app = new App();
