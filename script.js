@@ -14,6 +14,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 class Workout {
     date = new Date()
     id = (date.now() + '').slice(-10)
+    clicks = 0
 
     constructor (coords, distance, duration) {
         this.coords = coords
@@ -25,6 +26,9 @@ class Workout {
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${ months[this.date.getMonth()]} ${this.date.getDate()}`
+    }
+    click() {
+        this.click++
     }
     
 }
@@ -63,6 +67,7 @@ class Cycling extends Workout {
 ///////////////////////////////////////////
 class App {
     #map;
+    #mapZoomlevel = 13;
     #mapEvent;
     #workouts = []
 
@@ -87,7 +92,7 @@ class App {
 
         let coords = [latitude , longitude]
 
-        this.#map = L.map('map').setView(coords, 13);
+        this.#map = L.map('map').setView(this.#mapZoomlevel, 13);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -240,6 +245,15 @@ class App {
         if (!workoutEl) return;
 
         let workout = this.#workouts.find(work => work.id === workoutEl.dataset.id)
+
+        this.#map.setView(workout.coords, this.#mapZoomlevel, {
+            animate: true,
+            pan: {
+                duration: 1
+            }
+        })
+
+        workout.click()
     }
 }
 let app = new App();
